@@ -9,6 +9,12 @@ public class Drawer extends JPanel{
     
     int width, height;
     Map<Integer, int[]> coords;
+    GameFrame gf;
+
+    public Drawer(GameFrame gf){
+        super();
+        this.gf = gf;
+    }
     
     public void createMap(int width, int height) {
         coords = new HashMap<Integer, int[]>();
@@ -29,14 +35,14 @@ public class Drawer extends JPanel{
         int h = getHeight();
         int w = getWidth();
         createMap(w, h);
-        ButtonPlacer.place(w,h);
-        
+        gf.place(w,h);
+        int[] state = gf.returnState();
         for (int i = 0; i < 9; i++) {
             int[] placement = coords.get(i);
-            if (View.state[i] == 1){
+            if (state[i] == 1){
                 g.drawImage(ImageLoader.imgX, placement[0],placement[1],placement[2],placement[3], null);
             }
-            else if (View.state[i] == 2){
+            else if (state[i] == 2){
                 g.drawImage(ImageLoader.imgO, placement[0],placement[1],placement[2],placement[3], null);
             }
         }
@@ -45,4 +51,5 @@ public class Drawer extends JPanel{
         g.drawLine(w/3, h, w/3, 0);
         g.drawLine(w *2/3, h , w*2/3, 0);
     }
+    
 }
