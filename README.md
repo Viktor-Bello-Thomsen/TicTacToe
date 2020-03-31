@@ -1,5 +1,5 @@
 # TicTacToe
-TicTacToe game with multiplayer (offline) and single (vs AI). Created in java
+TicTacToe game with multiplayer (offline) and singleplayer (vs AI). Created in java
 
 # To-do
 - [ ] Create SinglePlayerFrame vs random AI
