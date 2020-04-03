@@ -1,5 +1,4 @@
 package src.pack1;
-
 import javax.swing.JPanel;
 import java.awt.*;
 import java.util.HashMap;
