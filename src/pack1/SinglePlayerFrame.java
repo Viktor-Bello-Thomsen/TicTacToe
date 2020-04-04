@@ -1,10 +1,12 @@
 package src.pack1;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.util.concurrent.ThreadLocalRandom;
 import java.awt.event.*;
-import java.util.concurrent.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -13,7 +15,7 @@ public class SinglePlayerFrame extends JFrame implements GameFrame {
     private JButton buttons[] = new JButton[9];
     private int state[] = new int[9];
     private int totalMoves = 0;
-    private int aIMode = 1;
+    private int aIMode = 2;
 
     public SinglePlayerFrame(int width, int height) {
         super();
@@ -36,6 +38,7 @@ public class SinglePlayerFrame extends JFrame implements GameFrame {
             return;
         else {
             state[i] = 1;
+            totalMoves += 1;
             repaint();
             validate();
             if (checkWin() != 0) {
@@ -92,48 +95,56 @@ public class SinglePlayerFrame extends JFrame implements GameFrame {
         } else if (state[2] != 0 && state[2] == state[4] && state[2] == state[6]) {
             return state[2];
         }
-        totalMoves += 1;
         return 0;
     }
 
-    private int easyMove(){
+    private int easyMove() {
         boolean searching = true;
-            while (searching) {
-                int num = ThreadLocalRandom.current().nextInt(0, 9);
-                if (state[num] == 0) {
-                    return num;
-                }
-            } 
+        while (searching) {
+            int num = ThreadLocalRandom.current().nextInt(0, 9);
+            if (state[num] == 0) {
+                return num;
+            }
+        }
         return 0;
     }
 
-    private int mediumMove(){
-         // check if there is a winning move for opponent next turn
-         int fakeState[] = state;
-         for(int i = 0; i < 9; i++){
-             if (fakeState[i] == 0){
-                 fakeState[i] = 1;
-                 if (checkWin() == 1){
-                     return i;
-                 }
-                 else fakeState[i] = 0;
-             }
-         }
-         // if no winning move just make a random move
-         return easyMove();
+    private int mediumMove() {
+
+        int fakeState[] = state;
+
+        // check if there is a winning move
+        for (int i = 0; i < 9; i++) {
+            if (fakeState[i] == 0) {
+                fakeState[i] = 2;
+                if (checkWin() == 2) {
+                    return i;
+                } else
+                    fakeState[i] = 0;
+            }
+        }
+        // check if there is a winning move for opponent next turn
+        for (int i = 0; i < 9; i++) {
+            if (fakeState[i] == 0) {
+                fakeState[i] = 1;
+                if (checkWin() == 1) {
+                    return i;
+                } else
+                    fakeState[i] = 0;
+            }
+        }
+        // if no winning move just make a random move
+        return easyMove();
     }
 
     private void moveAI() {
         if (aIMode == 1) {
-            state[easyMove()] = 2; 
+            state[easyMove()] = 2;
         }
 
-        if(aIMode == 2){
+        if (aIMode == 2) {
             state[mediumMove()] = 2;
         }
-
-
-
 
         if (checkWin() != 0) {
             // Create popupbox declaring winner
@@ -142,6 +153,7 @@ public class SinglePlayerFrame extends JFrame implements GameFrame {
             repaint();
             validate();
         }
+        totalMoves += 1;
     }
 
     private void CreateButtons() {
@@ -157,25 +169,55 @@ public class SinglePlayerFrame extends JFrame implements GameFrame {
         place(getWidth(), getHeight());
     }
 
-    public int[] returnState(){
+    public int[] returnState() {
         return state;
     }
-    
-    public void place(int  width, int height){
-        buttons[0].setBounds(0, 0,width/3, height/3);
-        buttons[1].setBounds(width/3, 0,width/3, height/3);
-        buttons[2].setBounds(width*2/3, 0,width/3, height/3);
 
-        buttons[3].setBounds(0, height/3,width/3, height/3);
-        buttons[4].setBounds(width/3, height/3,width/3, height/3);
-        buttons[5].setBounds(width*2/3, height/3,width/3, height/3);
-        
-        buttons[6].setBounds(0, height*2/3,width/3, height/3);
-        buttons[7].setBounds(width/3, height*2/3,width/3, height/3);
-        buttons[8].setBounds(width*2/3, height*2/3,width/3, height/3);
+    public void place(int width, int height) {
+        buttons[0].setBounds(0, 0, width / 3, height / 3);
+        buttons[1].setBounds(width / 3, 0, width / 3, height / 3);
+        buttons[2].setBounds(width * 2 / 3, 0, width / 3, height / 3);
+
+        buttons[3].setBounds(0, height / 3, width / 3, height / 3);
+        buttons[4].setBounds(width / 3, height / 3, width / 3, height / 3);
+        buttons[5].setBounds(width * 2 / 3, height / 3, width / 3, height / 3);
+
+        buttons[6].setBounds(0, height * 2 / 3, width / 3, height / 3);
+        buttons[7].setBounds(width / 3, height * 2 / 3, width / 3, height / 3);
+        buttons[8].setBounds(width * 2 / 3, height * 2 / 3, width / 3, height / 3);
     }
-    private JMenuBar CreateMenuBar(){
+
+    private JMenuBar CreateMenuBar() {
         JMenuBar mb = new JMenuBar();
+        JMenuItem resetButton = new JMenuItem("Reset Game");
+        resetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                reset();
+            }
+        });
+
+        JMenu difficulty = new JMenu("Difficulty");
+
+        JMenuItem aiEasy = new JMenuItem("Easy");
+        aiEasy.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                aIMode = 1;
+                JOptionPane.showMessageDialog(null, "Easy difficulty set");
+            }
+        });
+        JMenuItem aiMedium = new JMenuItem("Medium");
+        aiMedium.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                aIMode = 2;
+                JOptionPane.showMessageDialog(null, "Medium difficulty set");
+            }
+        });
+
+        mb.add(resetButton);
+        difficulty.add(aiEasy);
+        difficulty.add(aiMedium);
+        mb.add(difficulty);
+        mb.setLayout(new GridLayout());
         return mb;
     }
 }
