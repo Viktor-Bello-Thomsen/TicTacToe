@@ -8,7 +8,7 @@ TicTacToe game with multiplayer (offline) and singleplayer (vs AI). Created in j
 - [ ] Implement Minimax as hardest difficulty (This should be impossible to win against)
 - [ ] Give user ability to change between multiplayer and singleplayer
 - [ ] Fix redundancies in multiplayer and singleplayer (GameFrame)
-
+- [ ] Create server to run multiplayer online
 
 
 
